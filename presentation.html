@@ -184,14 +184,21 @@
   <section>
     <h2>Mathematical Model: Governing Equations</h2>
     <p>Mixed fluid-particle domain: \(\Omega_T = \Omega_f \cup \bigcup_{i=1}^{N} \Omega_i\)</p>
-    <h3>Incompressible Navier&ndash;Stokes on \(\Omega_f\)</h3>
-    <div class="equation-box">
-      \[\rho_f \left(\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u}\cdot\nabla\mathbf{u}\right) - \nabla\cdot\boldsymbol{\sigma} = \mathbf{0}\]
-      \[\nabla\cdot\mathbf{u} = 0\]
-    </div>
-    <p>with the Cauchy stress tensor for a Newtonian fluid:</p>
-    <div class="equation-box">
-      \[\boldsymbol{\sigma} = -pI + \mu_f\left[\nabla\mathbf{u} + (\nabla\mathbf{u})^\top\right]\]
+    <div class="two-col">
+      <div>
+        <h3>Incompressible Navier&ndash;Stokes on \(\Omega_f\)</h3>
+        <div class="equation-box">
+          \[\rho_f \left(\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u}\cdot\nabla\mathbf{u}\right) - \nabla\cdot\boldsymbol{\sigma} = \mathbf{0}\]
+          \[\nabla\cdot\mathbf{u} = 0\]
+        </div>
+      </div>
+      <div>
+        <h3>Cauchy stress tensor</h3>
+        <p>For a Newtonian fluid:</p>
+        <div class="equation-box">
+          \[\boldsymbol{\sigma} = -pI + \mu_f\left[\nabla\mathbf{u} + (\nabla\mathbf{u})^\top\right]\]
+        </div>
+      </div>
     </div>
   </section>
 
