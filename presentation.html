@@ -184,25 +184,33 @@
   <section>
     <h2>Mathematical Model: Governing Equations</h2>
     <p>Mixed fluid-particle domain: \(\Omega_T = \Omega_f \cup \bigcup_{i=1}^{N} \Omega_i\)</p>
-    <div class="two-col">
-      <div>
-        <h3>Incompressible Navier&ndash;Stokes on \(\Omega_f\)</h3>
-        <div class="equation-box">
-          \[\rho_f \left(\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u}\cdot\nabla\mathbf{u}\right) - \nabla\cdot\boldsymbol{\sigma} = \mathbf{0}\]
-          \[\nabla\cdot\mathbf{u} = 0\]
-        </div>
-        <p>with Cauchy stress tensor:</p>
-        <div class="equation-box">
-          \[\boldsymbol{\sigma} = -pI + \mu_f\left[\nabla\mathbf{u} + (\nabla\mathbf{u})^\top\right]\]
-        </div>
-      </div>
-      <div>
-        <h3>Rigid-body constraint in \(\Omega_i\)</h3>
-        <div class="equation-box">
-          \[\mathbf{u}(\mathbf{x}) = \mathbf{U}_i + \boldsymbol{\omega}_i \times (\mathbf{x} - \mathbf{X}_i)\]
-        </div>
-        <p style="margin-top:1em;">This boundary condition couples the fluid to the particle motion and enables <strong>two-way momentum exchange</strong>.</p>
-      </div>
+    <h3>Incompressible Navier&ndash;Stokes on \(\Omega_f\)</h3>
+    <div class="equation-box">
+      \[\rho_f \left(\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u}\cdot\nabla\mathbf{u}\right) - \nabla\cdot\boldsymbol{\sigma} = \mathbf{0}\]
+      \[\nabla\cdot\mathbf{u} = 0\]
+    </div>
+    <p>with the Cauchy stress tensor for a Newtonian fluid:</p>
+    <div class="equation-box">
+      \[\boldsymbol{\sigma} = -pI + \mu_f\left[\nabla\mathbf{u} + (\nabla\mathbf{u})^\top\right]\]
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- RIGID-BODY CONSTRAINT / TWO-WAY COUPLING -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Rigid-Body Constraint &amp; Two-Way Coupling</h2>
+    <p>Inside each particle domain \(\Omega_i\), the velocity field satisfies:</p>
+    <div class="equation-box">
+      \[\mathbf{u}(\mathbf{x}) = \mathbf{U}_i + \boldsymbol{\omega}_i \times (\mathbf{x} - \mathbf{X}_i)\]
+    </div>
+    <ul style="margin-top:1em;">
+      <li>\(\mathbf{U}_i\): translational velocity of particle \(i\)</li>
+      <li>\(\boldsymbol{\omega}_i\): angular velocity of particle \(i\)</li>
+      <li>\(\mathbf{X}_i\): center of mass of particle \(i\)</li>
+    </ul>
+    <div class="highlight-box" style="margin-top:1em;">
+      This constraint couples the fluid to the particle motion and enables <strong>full two-way momentum exchange</strong> &mdash; the key difference to one-way coupled LPT approaches.
     </div>
   </section>
 
