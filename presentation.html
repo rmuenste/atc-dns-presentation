@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Particle-Resolved DNS for the Archimedes Tube Crystallizer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+  <!-- MathJax for equations -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --r-heading-color: #2c3e50;
+      --r-main-color: #333;
+      --r-link-color: #2980b9;
+    }
+    .reveal h1, .reveal h2, .reveal h3 {
+      text-transform: none;
+      font-weight: 700;
+    }
+    .reveal h1 { font-size: 1.8em; }
+    .reveal h2 { font-size: 1.4em; }
+    .reveal h3 { font-size: 1.1em; }
+    .reveal p, .reveal li { font-size: 0.75em; line-height: 1.4; }
+    .reveal .small { font-size: 0.6em; }
+    .reveal .tiny { font-size: 0.5em; color: #777; }
+    .reveal table { font-size: 0.65em; margin: 0 auto; }
+    .reveal table th { background: #2c3e50; color: white; padding: 8px 14px; }
+    .reveal table td { padding: 6px 14px; border-bottom: 1px solid #ddd; }
+    .reveal table tr:nth-child(even) { background: #f8f9fa; }
+    .two-col { display: flex; gap: 2em; align-items: flex-start; }
+    .two-col > div { flex: 1; }
+    .highlight-box {
+      background: #eaf2f8;
+      border-left: 4px solid #2980b9;
+      padding: 15px 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+      font-size: 0.7em;
+    }
+    .green-zone { color: #27ae60; font-weight: bold; }
+    .yellow-zone { color: #f39c12; font-weight: bold; }
+    .red-zone { color: #e74c3c; font-weight: bold; }
+    .reveal .method-compare td:first-child { font-weight: bold; }
+    .reveal ul { list-style-type: none; }
+    .reveal ul li::before {
+      content: "\25B8";
+      color: #2980b9;
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+    .equation-box {
+      background: #f5f5f5;
+      padding: 12px 20px;
+      border-radius: 6px;
+      margin: 10px auto;
+      display: inline-block;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.55em;
+      font-weight: bold;
+      color: white;
+      margin: 2px;
+    }
+    .badge-green { background: #27ae60; }
+    .badge-yellow { background: #f39c12; }
+    .badge-red { background: #e74c3c; }
+    .badge-blue { background: #2980b9; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+  <!-- ============================================================ -->
+  <!-- TITLE SLIDE -->
+  <!-- ============================================================ -->
+  <section>
+    <h1 style="font-size:1.5em; line-height:1.3;">Feasibility Study for Physics-Informed DNS<br>
+      <span style="font-size:0.8em;">Describing Particle Suspension in High-Loaded<br>Compartments of Air-Segmented Flow</span></h1>
+    <p style="margin-top:1em; font-size:0.7em;">
+      <strong>O. Mierka, R. M&uuml;nster<sup>*</sup>, H.J.F. Bettin, K. Wohlgemuth, S. Turek</strong><br>
+      <span class="small">
+        <sup>1</sup> Institute of Applied Mathematics (LS III), TU Dortmund University<br>
+        <sup>2</sup> Laboratory of Plant and Process Design, TU Dortmund University
+      </span>
+    </p>
+    <p class="tiny" style="margin-top:1.5em;">arXiv:2512.05785 &mdash; December 2025</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- OUTLINE -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Outline</h2>
+    <ol style="font-size:0.75em; line-height:1.8;">
+      <li>Motivation &amp; Background</li>
+      <li>The Archimedes Tube Crystallizer (ATC)</li>
+      <li>Mathematical Model &amp; Numerical Methods</li>
+      <li>Hard Contact Model for Rigid Particles</li>
+      <li>DNS vs. LPT &mdash; Key Advantages</li>
+      <li>Quantitative Metrics for Flow Regime Classification</li>
+      <li>Results &amp; Validation</li>
+      <li>Conclusion &amp; Outlook</li>
+    </ol>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- MOTIVATION -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Motivation</h2>
+    <ul>
+      <li>Crystallization is critical in pharmaceutical &amp; chemical manufacturing</li>
+      <li>Narrow particle size distribution (PSD) ensures product quality</li>
+      <li>Continuous crystallization offers better consistency than batch methods</li>
+      <li>Particle suspension quality directly impacts agglomeration, breakage, and blockage</li>
+    </ul>
+    <div class="highlight-box" style="margin-top:1em;">
+      <strong>Key challenge:</strong> One-way coupled models (LPT) fail to capture
+      fluid&ndash;particle feedback at higher solid loadings. We need fully resolved simulations.
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- ATC INTRODUCTION -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>The Archimedes Tube Crystallizer</h2>
+    <div class="two-col">
+      <div>
+        <ul>
+          <li>Small-scale continuous crystallizer</li>
+          <li>Coiled tube design with air-segmented flow</li>
+          <li>Taylor &amp; Dean vortices drive particle suspension</li>
+          <li>Narrow residence time distribution (RTD) via plug flow</li>
+        </ul>
+        <p class="small" style="margin-top:1em;"><strong>Key parameters:</strong><br>
+          Coil diameter \(d_{ct} = 50\) mm, tube diameter \(d_i = 5\) mm,<br>
+          pitch \(P = 7\) mm, 45 coils
+        </p>
+      </div>
+      <div style="text-align:center;">
+        <!-- Placeholder for ATC schematic (Figure 2) -->
+        <div style="background:#f0f0f0; padding:40px 20px; border-radius:8px; border:2px dashed #aaa;">
+          <p class="small" style="color:#888; margin:0;"><em>ATC Schematic</em><br>(Figure 2 from paper)</p>
+        </div>
+        <p class="tiny" style="margin-top:0.5em;">Feed tank &rarr; peristaltic pump &rarr; coiled tube &rarr; video camera</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- GOALS -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Goals of This Work</h2>
+    <div style="font-size:0.75em;">
+      <div class="highlight-box">
+        <strong>1. Validate</strong> the DNS approach against experimental data and existing validated computational methods for representative ATC operating conditions.
+      </div>
+      <div class="highlight-box">
+        <strong>2. Demonstrate feasibility</strong> of DNS for simulating a substantial number of particles relevant to ATC conditions, and identify strategies for scaling to larger particle counts.
+      </div>
+    </div>
+    <p class="small" style="margin-top:1em;">
+      <span class="badge badge-blue">L-alanine</span>
+      <span class="badge badge-blue">8 cases</span>
+      <span class="badge badge-blue">3 particle sizes</span>
+      <span class="badge badge-blue">2 solid contents</span>
+      <span class="badge badge-blue">3 rotational speeds</span>
+    </p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- MATHEMATICAL MODEL -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Mathematical Model: Governing Equations</h2>
+    <p>Mixed fluid-particle domain: \(\Omega_T = \Omega_f \cup \bigcup_{i=1}^{N} \Omega_i\)</p>
+    <div class="two-col">
+      <div>
+        <h3>Incompressible Navier&ndash;Stokes on \(\Omega_f\)</h3>
+        <div class="equation-box">
+          \[\rho_f \left(\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u}\cdot\nabla\mathbf{u}\right) - \nabla\cdot\boldsymbol{\sigma} = \mathbf{0}\]
+          \[\nabla\cdot\mathbf{u} = 0\]
+        </div>
+        <p>with Cauchy stress tensor:</p>
+        <div class="equation-box">
+          \[\boldsymbol{\sigma} = -pI + \mu_f\left[\nabla\mathbf{u} + (\nabla\mathbf{u})^\top\right]\]
+        </div>
+      </div>
+      <div>
+        <h3>Rigid-body constraint in \(\Omega_i\)</h3>
+        <div class="equation-box">
+          \[\mathbf{u}(\mathbf{x}) = \mathbf{U}_i + \boldsymbol{\omega}_i \times (\mathbf{x} - \mathbf{X}_i)\]
+        </div>
+        <p style="margin-top:1em;">This boundary condition couples the fluid to the particle motion and enables <strong>two-way momentum exchange</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- FICTITIOUS BOUNDARY METHOD -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Fictitious Boundary Method (FBM)</h2>
+    <div class="two-col">
+      <div>
+        <h3>Key Idea</h3>
+        <ul>
+          <li>Governing equations extended to full domain \(\Omega_T\)</li>
+          <li>Rigid-body constraints enforced in particle regions</li>
+          <li>Single-domain formulation on a <strong>fixed mesh</strong></li>
+          <li>No re-meshing needed as particles move</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Force &amp; Torque Computation</h3>
+        <p>Hydrodynamic force and torque via volume integrals:</p>
+        <div class="equation-box">
+          \[\mathbf{F}_i = -\int_{\Omega_T} \boldsymbol{\sigma}\cdot\nabla\alpha_i\,d\mathbf{x}\]
+        </div>
+        <div class="equation-box">
+          \[\mathbf{T}_i = -\int_{\Omega_T} (\mathbf{x} - \mathbf{X}_i) \times (\boldsymbol{\sigma}\cdot\nabla\alpha_i)\,d\mathbf{x}\]
+        </div>
+        <p class="small" style="margin-top:0.5em;">where \(\alpha_i\) is the indicator function of particle \(i\) and \(\mathbf{X}_i\) its center. This avoids explicit surface integration and is well-suited for structured meshes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- NEWTON-EULER + DISCRETIZATION -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Particle Dynamics &amp; Discretization</h2>
+    <div class="two-col">
+      <div>
+        <h3>Newton&ndash;Euler Equations</h3>
+        <div class="equation-box">
+          \[M_i \frac{d\mathbf{U}_i}{dt} = \Delta M_i \mathbf{g} + \mathbf{F}_i + \mathbf{F}_i^{\text{col}}\]
+        </div>
+        <div class="equation-box">
+          \[\mathbf{I}_i \frac{d\boldsymbol{\omega}_i}{dt} + \boldsymbol{\omega}_i \times (\mathbf{I}_i \boldsymbol{\omega}_i) = \mathbf{T}_i\]
+        </div>
+        <p class="small">Two-way coupling: boundary condition in particle domain feeds back into the flow.</p>
+      </div>
+      <div>
+        <h3>Discretization</h3>
+        <ul>
+          <li>Time: strongly A-stable fractional-step-&theta; scheme</li>
+          <li>Space: hexahedral meshes, \(Q_2/P_1^{\text{disc}}\) elements</li>
+          <li>Rigid-body constraints enforced strongly on all nodes within particles</li>
+          <li>Parallel domain decomposition</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- HARD CONTACT MODEL -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Hard Contact Model</h2>
+    <ul>
+      <li>Nonsmooth hard-contact formulation with <strong>Coulomb friction</strong></li>
+      <li>No artificial spring&ndash;dashpot energies (unlike soft-sphere DEM)</li>
+      <li>Contacts formulated as point-wise constraints via the <strong>Delassus operator</strong></li>
+      <li>Solved iteratively with Projected Gauss&ndash;Seidel (PGS)</li>
+    </ul>
+    <div class="equation-box" style="margin-top:0.8em;">
+      \[\mathbf{p}_i^{k+1} = \Pi_{\mathcal{K}_i}\!\left(\mathbf{p}_i^k - \omega \mathbf{W}_{ii}^{-1}\hat{\mathbf{g}}_i\right)\]
+    </div>
+    <p class="small" style="margin-top:0.5em;">
+      Baumgarte stabilization for numerical stability &bull;
+      Parallelized via ghost-body velocity exchange across subdomains &bull;
+      Implementation based on a fork of the <em>Physics Engine (pe)</em> framework
+    </p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- DNS vs LPT -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Why DNS over LPT?</h2>
+    <table class="method-compare">
+      <thead>
+        <tr><th>Feature</th><th>LPT / S&ndash;N</th><th>DNS (FEM-FBM)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Coupling</td><td>One-way (drag only)</td><td>Full two-way</td></tr>
+        <tr><td>Forces</td><td>Drag correlation</td><td>Resolved from stress tensor</td></tr>
+        <tr><td>Lift &amp; torque</td><td>Requires extra closures</td><td>Naturally captured</td></tr>
+        <tr><td>Local \(\phi\) dependence</td><td>Not included</td><td>Inherently resolved</td></tr>
+        <tr><td>Particle&ndash;particle interaction</td><td>Neglected</td><td>Collisions + lubrication</td></tr>
+        <tr><td>Wake effects</td><td>Frozen carrier flow</td><td>Vortex shedding captured</td></tr>
+        <tr><td>Dense suspensions</td><td>Inaccurate</td><td>Valid even at high \(\phi\)</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:0.8em;">S&ndash;N drag has no \(\phi\)-dependence and under-predicts drag in dense/stacking configurations.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- EXPERIMENTAL SETUP -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Experimental Validation Setup</h2>
+    <div class="two-col">
+      <div>
+        <h3>Material System</h3>
+        <ul>
+          <li>L-alanine crystals in saturated aqueous solution</li>
+          <li>\(\rho_f = 1043\) kg/m&sup3;, \(\eta_f = 0.001\) Pa&middot;s</li>
+          <li>\(\rho_p = 1420\) kg/m&sup3;</li>
+          <li>Sieving fractions: 200&ndash;250 &mu;m and 250&ndash;315 &mu;m</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Operating Points</h3>
+        <table>
+          <thead><tr><th>\(n_{\text{ATC}}\)</th><th>\(d_p\) [&mu;m]</th><th>\(w_{\text{solid}}\)</th></tr></thead>
+          <tbody>
+            <tr><td>40 rpm</td><td>229.6</td><td>1.0 / 5.1 wt%</td></tr>
+            <tr><td>25 rpm</td><td>229.6</td><td>1.0 / 5.1 wt%</td></tr>
+            <tr><td>12 rpm</td><td>364.5</td><td>1.0 / 5.1 wt%</td></tr>
+          </tbody>
+        </table>
+        <p class="small" style="margin-top:0.5em;">Filling degree \(\varepsilon = 0.25\) throughout.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SIMULATION CASES -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Simulation Cases (C1&ndash;C8)</h2>
+    <table>
+      <thead>
+        <tr><th>Case</th><th>\(n_{\text{ATC}}\) [rpm]</th><th>\(d_p\) [&mu;m]</th><th>\(w_{\text{solid}}\) [wt%]</th><th>Flow Map Zone</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>C1</td><td>40</td><td>182</td><td>1.0</td><td><span class="green-zone">green</span></td></tr>
+        <tr><td>C2</td><td>40</td><td>182</td><td>5.1</td><td><span class="green-zone">green</span></td></tr>
+        <tr><td>C3</td><td>40</td><td>273</td><td>1.0</td><td><span class="yellow-zone">yellow</span></td></tr>
+        <tr><td>C4</td><td>40</td><td>273</td><td>5.1</td><td><span class="yellow-zone">yellow</span></td></tr>
+        <tr><td>C5</td><td>25</td><td>273</td><td>1.0</td><td><span style="color:#e67e22; font-weight:bold;">red/yellow</span></td></tr>
+        <tr><td>C6</td><td>25</td><td>273</td><td>5.1</td><td><span style="color:#e67e22; font-weight:bold;">red/yellow</span></td></tr>
+        <tr><td>C7</td><td>12</td><td>364</td><td>1.0</td><td><span class="red-zone">red</span></td></tr>
+        <tr><td>C8</td><td>12</td><td>364</td><td>5.1</td><td><span class="red-zone">red</span></td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:0.5em;">Spanning all four experimentally observed flow regimes.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- QUANTITATIVE METRICS OVERVIEW -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Three Quantitative Metrics</h2>
+    <p class="small" style="margin-bottom:0.5em;">Introduced to classify suspension regimes <em>beyond</em> qualitative visual inspection:</p>
+    <div style="display:flex; gap:1em; font-size:0.65em;">
+      <div style="flex:1; background:#eaf7ef; padding:15px; border-radius:8px; border-top:4px solid #27ae60;">
+        <h3 style="color:#27ae60; margin-top:0;">1. Axial Distribution \(\overline\phi(s)\)</h3>
+        <p>Mean solid volume fraction along the slug centerline. Captures <strong>rear-loading</strong> vs. uniform distribution.</p>
+      </div>
+      <div style="flex:1; background:#fef5e7; padding:15px; border-radius:8px; border-top:4px solid #f39c12;">
+        <h3 style="color:#f39c12; margin-top:0;">2. Radial Index \(I_r\)</h3>
+        <p>Uniformity of cross-sectional distribution. \(I_r \to 1\): well-mixed; \(I_r \ll 1\): wall accumulation.</p>
+      </div>
+      <div style="flex:1; background:#fdedec; padding:15px; border-radius:8px; border-top:4px solid #e74c3c;">
+        <h3 style="color:#e74c3c; margin-top:0;">3. Vertical Asymmetry \(A_y\)</h3>
+        <p>Particle imbalance across the mid-plane. \(A_y \approx 0\): symmetric; \(A_y \to -1\): gravity-dominated.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- REGIME CLASSIFICATION TABLE -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Linking Metrics to Flow Regimes</h2>
+    <table style="font-size:0.7em;">
+      <thead>
+        <tr><th>Flow Regime</th><th>\(\overline\phi(s)\)</th><th>\(I_r\)</th><th>\(A_y\)</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="green-zone">Green</span> (fully mixed)</td>
+          <td>Nearly flat</td>
+          <td>\(\to 1\)</td>
+          <td>\(\approx 0\)</td>
+        </tr>
+        <tr>
+          <td><span class="yellow-zone">Yellow</span></td>
+          <td>Moderate spread</td>
+          <td>\(0.5 < I_r < 0.8\)</td>
+          <td>\(\ll 0\)</td>
+        </tr>
+        <tr>
+          <td><span style="color:#e67e22; font-weight:bold;">Red/Yellow</span></td>
+          <td>Rear-biased</td>
+          <td>\(\sim 0.4\text{&ndash;}0.5\)</td>
+          <td>\(\approx -0.95\)</td>
+        </tr>
+        <tr>
+          <td><span class="red-zone">Red</span> (gravitational)</td>
+          <td>Peak at rear</td>
+          <td>\(\lesssim 0.5\)</td>
+          <td>\(\to -1\)</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="highlight-box" style="margin-top:1em;">
+      Combined interpretation of all three metrics is essential &mdash; any single metric alone can be misleading (e.g., moderate \(I_r\) in red regime is an artifact of rear stacking geometry).
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- QUALITATIVE RESULTS -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Qualitative Comparison: Experiment vs. DNS</h2>
+    <div class="two-col">
+      <div style="text-align:center;">
+        <!-- Placeholder for Figure 4 -->
+        <div style="background:#f0f0f0; padding:30px 15px; border-radius:8px; border:2px dashed #aaa;">
+          <p class="small" style="color:#888; margin:0;"><em>Side-view images (experiment)<br>vs. DNS renderings<br>for cases C1&ndash;C4</em><br>(Figure 4)</p>
+        </div>
+      </div>
+      <div>
+        <ul>
+          <li><span class="green-zone">C1&ndash;C2 (green):</span> Uniform suspension, particles fill the slug</li>
+          <li><span class="yellow-zone">C3&ndash;C4 (yellow):</span> Rear-loading visible, depleted front region</li>
+          <li><span style="color:#e67e22; font-weight:bold;">C5&ndash;C6 (red/yellow):</span> Strong rear accumulation, stacking at bottom</li>
+          <li><span class="red-zone">C7&ndash;C8 (red):</span> Extreme settling, dense bottom-rear cluster</li>
+        </ul>
+        <p class="small" style="margin-top:0.8em;">DNS faithfully reproduces all experimentally observed suspension patterns.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- QUANTITATIVE RESULTS TABLE -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Quantitative Results: All Cases</h2>
+    <table style="font-size:0.6em;">
+      <thead>
+        <tr><th>Case</th><th>\(\overline\phi(z)\)</th><th>\(I_r\)</th><th>\(A_y\)</th><th>\(\phi_{\text{upper}}\)</th><th>\(\phi_{\text{lower}}\)</th><th>Zone</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>C1</td><td>nearly flat</td><td>0.91</td><td>0.020</td><td>0.510</td><td>0.490</td><td><span class="green-zone">green</span></td></tr>
+        <tr><td>C2</td><td>nearly flat</td><td>0.90</td><td>&minus;0.119</td><td>0.441</td><td>0.559</td><td><span class="green-zone">green</span></td></tr>
+        <tr><td>C3</td><td>mid&ndash;rear</td><td>0.77</td><td>&minus;0.976</td><td>0.012</td><td>0.988</td><td><span class="yellow-zone">yellow</span></td></tr>
+        <tr><td>C4</td><td>mid&ndash;rear</td><td>0.57</td><td>&minus;0.878</td><td>0.061</td><td>0.939</td><td><span class="yellow-zone">yellow</span></td></tr>
+        <tr><td>C5</td><td>rear-biased</td><td>0.54</td><td>&minus;0.960</td><td>0.020</td><td>0.980</td><td><span style="color:#e67e22; font-weight:bold;">red/yellow</span></td></tr>
+        <tr><td>C6</td><td>rear-biased</td><td>0.41</td><td>&minus;0.945</td><td>0.027</td><td>0.973</td><td><span style="color:#e67e22; font-weight:bold;">red/yellow</span></td></tr>
+        <tr><td>C7</td><td>rear-loaded</td><td>0.48</td><td>&minus;1.000</td><td>0.000</td><td>1.000</td><td><span class="red-zone">red</span></td></tr>
+        <tr><td>C8</td><td>rear-loaded</td><td>0.47</td><td>&minus;1.000</td><td>0.000</td><td>1.000</td><td><span class="red-zone">red</span></td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:0.5em;">Clear monotonic trends across regimes confirm DNS reproduces the experimental flow map.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- GREEN REGIME DETAIL -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Green Regime (C1&ndash;C2): Fully Mixed</h2>
+    <div class="two-col">
+      <div>
+        <ul>
+          <li>Axial profiles nearly flat &mdash; homogeneous distribution</li>
+          <li>Radial index \(I_r \approx 0.90\): uniform cross-sectional spread</li>
+          <li>Vertical asymmetry \(A_y \approx 0\): balanced Dean vortices counteract gravity</li>
+          <li>Higher solid content (C2) shows mild bottom-heaviness but radial homogeneity intact</li>
+        </ul>
+      </div>
+      <div style="text-align:center;">
+        <!-- Placeholder for axial + radial plots -->
+        <div style="background:#eaf7ef; padding:25px 15px; border-radius:8px; border:2px dashed #27ae60;">
+          <p class="small" style="color:#27ae60; margin:0;"><em>Axial distribution &amp;<br>radial heat maps<br>for C1 &amp; C2</em><br>(Figures 6a,b &amp; 8a,b)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- RED REGIME DETAIL -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Red Regime (C7&ndash;C8): Gravity-Dominated</h2>
+    <div class="two-col">
+      <div>
+        <ul>
+          <li>Extreme rear loading: all particles concentrated at slug rear</li>
+          <li>\(A_y = -1.0\): <strong>all</strong> particles below the mid-plane</li>
+          <li>Front of slug completely empty</li>
+          <li>Moderate \(I_r \approx 0.47\) is <em>misleading</em> &mdash; caused by geometric binning of rear stacking, not genuine radial uniformity</li>
+        </ul>
+        <div class="highlight-box">
+          This demonstrates why all three metrics must be interpreted jointly.
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <div style="background:#fdedec; padding:25px 15px; border-radius:8px; border:2px dashed #e74c3c;">
+          <p class="small" style="color:#e74c3c; margin:0;"><em>Axial distribution &amp;<br>radial heat maps<br>for C7 &amp; C8</em><br>(Figures 7c,d &amp; 9c,d)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TRANSITIONS -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Regime Transitions: The Full Picture</h2>
+    <div style="font-size:0.65em; text-align:center; margin:0.5em 0;">
+      <span class="badge badge-green">Green</span> &rarr;
+      <span class="badge badge-yellow">Yellow</span> &rarr;
+      <span style="background:#e67e22;" class="badge">Red/Yellow</span> &rarr;
+      <span class="badge badge-red">Red</span>
+    </div>
+    <ul>
+      <li><strong>Green &rarr; Yellow:</strong> Upper-vortex activity collapses, particles settle to lower half (\(A_y\) plunges toward &minus;1), \(I_r\) drops from 0.90 to 0.57&ndash;0.77</li>
+      <li><strong>Yellow &rarr; Red/Yellow:</strong> Rear-bias intensifies, middle radial bins deplete, stacking &amp; poor recirculation</li>
+      <li><strong>Red/Yellow &rarr; Red:</strong> Suspension collapses into dense bottom-rear cluster, \(A_y = -1.0\), front empty</li>
+    </ul>
+    <p class="small" style="margin-top:0.8em;">Meaningful upper-half particle population and front-filling occur <strong>only</strong> in the green regime.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- CONCLUSION -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Conclusion</h2>
+    <ul>
+      <li>Fully resolved DNS is <strong>feasible</strong> for predicting particle suspension in the ATC</li>
+      <li>8 simulations across 4 flow regimes match the experimental flow map with high fidelity</li>
+      <li>Three quantitative metrics (\(\overline\phi(s)\), \(I_r\), \(A_y\)) enable <strong>automated, objective</strong> regime classification</li>
+      <li>DNS captures effects inaccessible to LPT: momentum exchange, stacking, wall-ward clustering, lubrication</li>
+      <li>Combined metric interpretation avoids misleading single-measure conclusions</li>
+    </ul>
+    <div class="highlight-box" style="margin-top:0.8em;">
+      The DNS framework provides a <strong>mechanistic foundation</strong> for high-fidelity crystallizer design.
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- OUTLOOK -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Outlook &amp; Future Work</h2>
+    <ul>
+      <li>Extend DNS to <strong>larger particle numbers</strong> using parallel multigrid FEM solvers</li>
+      <li>Integrate with <strong>population balance equations</strong> (PBEs) for crystal growth modeling</li>
+      <li>Explore how the proposed metrics inform <strong>optimization and scale-up</strong> of the ATC</li>
+      <li>Develop DNS-informed <strong>closure models</strong> for cheaper simulation approaches</li>
+    </ul>
+    <div style="margin-top:1.5em; text-align:center;">
+      <h3>Thank you!</h3>
+      <p class="small">
+        Contact: <strong>raphael.muenster@tu-dortmund.de</strong><br>
+        arXiv:2512.05785
+      </p>
+    </div>
+  </section>
+
+</div><!-- slides -->
+</div><!-- reveal -->
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    width: 1280,
+    height: 720,
+    margin: 0.08,
+    transition: 'slide',
+    transitionSpeed: 'default',
+    pdfSeparateFragments: false,
+    mathjax3: {
+      mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+      tex: {
+        inlineMath: [['\\(','\\)']],
+        displayMath: [['\\[','\\]']]
+      }
+    }
+  });
+</script>
+</body>
+</html>
