@@ -322,6 +322,77 @@
   </section>
 
   <!-- ============================================================ -->
+  <!-- FROM ONE-WAY LPT TO FOUR-WAY E-L -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>From One-Way LPT to Four-Way-Coupled Euler&ndash;Lagrange</h2>
+    <table class="method-compare">
+      <thead>
+        <tr><th>Physics contribution</th><th>One-way LPT</th><th>Four-way Euler&ndash;Lagrange</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Fluid &rarr; particle</td><td>Drag from prescribed flow field</td><td>Drag/lift/added effects from solved carrier flow</td></tr>
+        <tr><td>Particle &rarr; fluid</td><td>Neglected</td><td>Momentum source term from all particles</td></tr>
+        <tr><td>Particle&ndash;particle coupling</td><td>Usually neglected</td><td>Collisions + frictional contact model</td></tr>
+        <tr><td>Hydrodynamic interactions</td><td>Via empirical corrections</td><td>Sub-grid closures (e.g., hindered drag/lubrication)</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:0.8em;">
+      Four-way coupling = two-way fluid&ndash;particle exchange + particle collisions/contact.
+      It retains tractable cost while addressing dense-suspension limitations of one-way LPT.
+    </p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- REQUIREMENTS FOR 4-WAY E-L -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>What Is Needed for Reliable Four-Way-Coupled Euler&ndash;Lagrange?</h2>
+    <div class="two-col">
+      <div>
+        <h3>Model Ingredients</h3>
+        <ul>
+          <li>Transient carrier-phase solver (RANS/LES) with particle momentum source coupling</li>
+          <li>Consistent force closures: drag, lift, pressure-gradient, added-mass (as needed)</li>
+          <li>Collision/contact treatment (hard-sphere or soft-sphere DEM) with friction/restitution</li>
+          <li>Near-contact hydrodynamics / hindered-settling corrections for high local \(\phi\)</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Numerics &amp; Calibration</h3>
+        <ul>
+          <li>Interpolation and mapping operators that conserve momentum between phases</li>
+          <li>Time-step constraints from collision time scales + CFL of carrier flow</li>
+          <li>Validation data or DNS-informed closures for dense regimes and wall effects</li>
+          <li>Scalable parallel implementation for \(10^6\!+\) particles and long residence times</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- DNS + 4-WAY E-L COMPLEMENTARITY -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>DNS and Four-Way Euler&ndash;Lagrange: Comparison and Complementarity</h2>
+    <table class="method-compare">
+      <thead>
+        <tr><th>Aspect</th><th>DNS (FEM-FBM)</th><th>4-way Euler&ndash;Lagrange</th><th>Best use in workflow</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Fidelity</td><td>Interface-resolved, minimal closures</td><td>Closure-based, unresolved particle-scale flow</td><td>Use DNS as reference truth and closure source</td></tr>
+        <tr><td>Computational cost</td><td>Very high</td><td>Moderate to high</td><td>Use 4-way E&ndash;L for design-space exploration</td></tr>
+        <tr><td>Particle count / horizon</td><td>Limited \(N_p\), short-to-medium times</td><td>Large \(N_p\), industrial time scales</td><td>Use 4-way E&ndash;L for scale-up and optimization</td></tr>
+        <tr><td>Dense suspension behavior</td><td>Directly resolved</td><td>Depends on closures/contact model</td><td>Continuously calibrate E&ndash;L with targeted DNS cases</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:0.8em;">
+      <strong>Practical strategy:</strong> DNS explains mechanisms and builds trustworthy closures;
+      four-way Euler&ndash;Lagrange transfers that physics to reactor-scale, computationally affordable simulations.
+    </p>
+  </section>
+
+  <!-- ============================================================ -->
   <!-- EXPERIMENTAL SETUP -->
   <!-- ============================================================ -->
   <section>
