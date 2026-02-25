@@ -11,9 +11,13 @@
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
-      --r-heading-color: #2c3e50;
-      --r-main-color: #333;
-      --r-link-color: #2980b9;
+      --r-heading-color: #83b818;
+      --r-main-color: #1f1f1f;
+      --r-link-color: #83b818;
+      --tu-green: #83b818;
+      --tu-green-dark: #639a00;
+      --tu-gray: #4a4a4a;
+      --tu-light-gray: #f3f5f2;
     }
     .reveal h1, .reveal h2, .reveal h3 {
       text-transform: none;
@@ -32,8 +36,8 @@
     .two-col { display: flex; gap: 2em; align-items: flex-start; }
     .two-col > div { flex: 1; }
     .highlight-box {
-      background: #eaf2f8;
-      border-left: 4px solid #2980b9;
+      background: #f1f6ea;
+      border-left: 4px solid var(--tu-green);
       padding: 15px 20px;
       margin: 15px 0;
       border-radius: 4px;
@@ -46,7 +50,7 @@
     .reveal ul { list-style-type: none; }
     .reveal ul li::before {
       content: "\25B8";
-      color: #2980b9;
+      color: var(--tu-green);
       font-weight: bold;
       display: inline-block;
       width: 1em;
@@ -71,7 +75,46 @@
     .badge-green { background: #27ae60; }
     .badge-yellow { background: #f39c12; }
     .badge-red { background: #e74c3c; }
-    .badge-blue { background: #2980b9; }
+    .badge-blue { background: var(--tu-green); }
+    .reveal .slides { padding-bottom: 70px; }
+    .tu-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 58px;
+      border-top: 2px solid var(--tu-green);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      box-sizing: border-box;
+      font-size: 0.6em;
+      color: var(--tu-gray);
+      z-index: 30;
+    }
+    .tu-footer .footer-left img {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+    .tu-footer .footer-right {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      white-space: nowrap;
+    }
+    .tu-footer .footer-right .date {
+      color: var(--tu-gray);
+    }
+    .tu-footer .footer-right .slide {
+      color: var(--tu-green);
+      font-weight: 700;
+      min-width: 32px;
+      text-align: right;
+    }
+    .reveal .slide-number { display: none; }
   </style>
 </head>
 <body>
@@ -662,6 +705,17 @@
 </div><!-- slides -->
 </div><!-- reveal -->
 
+<div class="tu-footer" aria-hidden="true">
+  <div class="footer-left">
+    <img src="tud_logo_pantone.png" alt="TU Dortmund University logo">
+  </div>
+  <div class="footer-right">
+    <span>TU Dortmund University | Presentation</span>
+    <span class="date">25.02.2026</span>
+    <span id="tu-slide-number" class="slide">1</span>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
 <script>
   Reveal.initialize({
@@ -681,6 +735,15 @@
       }
     }
   });
+
+  const updateSlideNumber = () => {
+    const current = Reveal.getIndices().h + 1;
+    const total = Reveal.getTotalSlides();
+    const el = document.getElementById('tu-slide-number');
+    if (el) el.textContent = `${current}/${total}`;
+  };
+  Reveal.on('ready', updateSlideNumber);
+  Reveal.on('slidechanged', updateSlideNumber);
 </script>
 </body>
 </html>
