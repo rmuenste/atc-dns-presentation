@@ -1,0 +1,78 @@
+\section{Archimedes Tube Crystallizer} \label{atc}
+The ATC is a small-scale continuous crystallizer developed by \textsc{Sonnenschein and Wohlgemuth} \cite{Sonnenschein.2022}. 
+Critical quality attributes such as product particle size and size distribution are vastly impacted by particle suspension within the ATC. If particles are insufficiently suspended, contact times between particles increase and agglomeration of particles is aggravated. Therefore, a narrow particles size distribution is directly linked to a low degree of agglomeration and a good particle suspension. \cite{Sonnenschein.2022b} 
+\newline
+To investigate the particle suspension, which is dependent on the operating parameters of the ATC, a model material system is chosen. 
+
+\subsection{Model Material System}
+For experimental validation of the simulations, \textsc{l}-alanine (99.7 \% purity, Evonik Industries AG) in ultra pure water (18.2 \si{\mega\ohm\cm}) was selected as a model material system. For the liquid phase, a saturated \textsc{l}-alanine solution at ambient temperature was prepared according to equation \ref{csatala} and equilibrated for 48 hours \cite{Wohlgemuth2013modeling}. 
+\begin{equation}\label{csatala}
+    c^*(\vartheta)\Bigr[\si{\g_{ala}}\cdot\si{g_{sol}^{-1}}\Bigr] = 0.11238\cdot\exp{(9.0849\cdot 10^{-3} \cdot \vartheta[\si{\celsius}])}
+\end{equation} 
+The \textsc{l}-alanine seed crystals used as solid phase were prepared according to \textsc{Ostermann et al.} \cite{Ostermann2018Growthrates}. Subsequently, the obtained seed crystal fractions of 200 - 250 µm and 250 - 315 µm were analyzed via image analysis (QICPIC+LIXELL, Sympatec GmbH) to obtain a precise particle size distribution (Figure \ref{PSD}).
+\begin{figure} [H]
+    \begin{subfigure}{0.5\textwidth}
+        \includegraphics[width=1\linewidth]{Figures/Q3seedcrystals_200-250.png}    
+        \caption{Sieving fraction 200 - 250 µm}
+        \label{fig:subim1}
+    \end{subfigure}
+     \begin{subfigure}{0.5\textwidth}
+        \includegraphics[width=1\linewidth]{Figures/Q3seedcrystals_250-315.png}    
+        \caption{Sieving fraction 250 - 315 µm}
+        \label{fig:subim2}
+    \end{subfigure}
+    \caption{Cumulative particle size distributions $Q_3$ of the seed crystals obtained from the sieving fractions \newline 200 - 250 µm (a) and 250 - 315 (b). Additionally the respective mode diameter $d_{\text{mode}}$ is given.}
+    \label{PSD}
+\end{figure}
+
+\subsection{Experimental Setup and Procedure}
+\label{sec::experimenalSetup}
+The experimental setup of the Archimedes Tube Crystallizer (ATC) and its periphery is shown in Figure \ref{Setup}. The feed tank, designed by \textsc{Lührmann et. al.}, provides the \textsc{l}-alanine suspension for the experiment \cite{Luhrmann2018continucleation}. Therefore, saturated \textsc{l}-alanine solution ($T_{\text{ambient}}$) is mixed with \textsc{l}-alanine seed crystals. For a homogeneous suspension, the liquid holdup of the feed tank is kept between 200-400 mL at a stirrer speed of 450 rpm. The suspension is transported via a peristaltic pump (Reglo-Digital MS-4, Ismatec) into the inlet tank of the ATC. The feed tank and the peristaltic pump are positioned above each other and higher than the ATC. Thereby, a blockage of the connecting tubes from sedimenting particles can be prevented. The structure of the silanized glass inlet tank leads to the formation of air-segmented liquid compartments due to a hole and the rotation of the apparatus. Each time the hole of the inlet tank is below the filling level, suspension flows into the connected silanized glass tube ($d_{\text{i,tube}} = 5$ mm), the actual ATC.
+The operating parameters of the ATC are set by the  the rotational speed, filling degree, and the solid content inside of the suspension.
+The rotational speed $n_{\text{ATC}}$ has a direct influence on the fluid flow inside the liquid compartments, where an increased $n_{\text{ATC}}$ results in an improved particle suspension \cite{Sonnenschein.2021}.
+The filling degree $\varepsilon$ describes the fraction of one coil volume that is filled with suspension. The filling degree results out of $n_{\text{ATC}}$ and the feed volume flow of suspension. %For higher $\varepsilon$ around 0.5, the inlet tank does not empty with each rotation. Thereby, the residence time inside of the inlet tank broadens. Furthermore, the number of particles increases for constant solid contents, which leads to higher local concentrations of particles at subpar suspensions. --> There is no source for these claims.
+The last modified parameter is the solid content $w_{\text{solid}}$ of the suspension.
+Therefore, the segmented liquid compartments are transported through the coiled tubing toward the outlet with each rotation according to the selected $n_{\text{ATC}}$. At the end of the ATC, the particle suspension is evaluated by a video camera (Samsung NX300), which is positioned directly beneath the rotation axis of the ATC. For better contrast, the last coil is isolated via a 3D-printed black cover. An LED light source is used for illumination. After a steady state in the size and position of the liquid compartments is reached, the suspension is recorded.
+\begin{figure} [h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figures/Setup.png}
+    \caption{Schematic depiction of the setup used for the validation experiments. Additionally, the dimensions of the ATC are given. }
+    \label{Setup}
+\end{figure}
+\newline For evaluating the simulated suspension behavior using the model described above, the suspension is recorded at the following operating points stated in Table \ref{tab:exp_op_points}. Additionally, the fluid and particle properties on which the simulations are based are given.
+\begin{table}[h]
+    \caption{Operating points used in experiments (a). The filling degree is chosen as $\varepsilon$ = 0.25. Fluid and particle properties used in this work (b).}
+    \label{tab:exp_op_points}
+    \centering
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \subcaption{Operating points}
+        \begin{tabular}{ccc}
+            \toprule
+            $n_\text{ATC}$ [rpm] & $d_{\text{mode}}$ [$\mu$m] & $w_\mathrm{solid}$ [wt\%]\\
+            \midrule
+            40 & 229.6 & 1.0 \\
+            40 & 229.6 & 5.1 \\
+            25 & 229.6 & 1.0 \\
+            25 & 229.6 & 5.1 \\
+            12 & 364.5 & 1.0 \\
+            12 & 364.5 & 5.1 \\
+            \bottomrule
+        \end{tabular}
+    \end{minipage}
+        \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \subcaption{Physical Parameters}
+        \label{tab:exp_op_points:properties}
+        \begin{tabular}{ll}
+        \toprule
+        \multicolumn{2}{c}{Constant Physical Parameters} \\
+        \midrule
+        Fluid density & $\rho_f = 1043\,\mathrm{kg\,m^{-3}}$ \\
+        Fluid viscosity & $\eta_f = 0.001\,\mathrm{Pa \cdot s}$ \\
+        Particle density & $\rho_p = 1420\,\mathrm{kg\,m^{-3}}$ \\
+        \bottomrule
+      \end{tabular}
+  \end{minipage}
+\end{table}
+To deepen our analysis, we will introduce three quantitative metrics in the next section that help us to enable objective classification of the suspension regimes beyond qualitative visual inspection.

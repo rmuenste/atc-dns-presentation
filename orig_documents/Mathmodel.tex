@@ -1,0 +1,84 @@
+\section{Mathematical Model Development} \label{mmd}
+In this section we present the modelling of the fluid problems by the FEM-FBM using DNS. We focus on the key aspects of the method and the two-way coupling that was not present in earlier simulations where the LPT approach was employed.
+\subsection{Mixed Fluid-Particle Flow Domain}
+\label{sec:modeling}
+
+We model the suspension of rigid particles in an incompressible Newtonian fluid using the  FEM–FBM approach \cite{WanTurek2006a, WanTurek2006b}. The coupled fluid–particle system is solved in a fixed background domain $\Omega_T$
+\begin{equation}
+\Omega_T = \Omega_f \cup \bigcup_{i=1}^N \Omega_i,
+\end{equation}
+where $\Omega_f$ is the fluid region and $\Omega_i$ denotes the subdomain occupied by the $i$-th rigid particle.
+
+\subsection{Governing Equations}
+
+The incompressible Navier–Stokes equations govern fluid motion in $\Omega_f$:
+\begin{align}
+\rho_f \left( \frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u} \right) - \nabla \cdot \boldsymbol{\sigma} &= \mathbf{0}, \\
+\nabla \cdot \mathbf{u} &= 0,
+\end{align}
+where the Cauchy stress tensor for a Newtonian fluid is
+\begin{equation}
+\boldsymbol{\sigma} = -p I + \mu_f \left[\nabla \mathbf{u} + (\nabla \mathbf{u})^\top\right].
+\end{equation}
+
+Inside each particle domain $\Omega_i$, the velocity field satisfies a rigid-body motion constraint:
+\begin{equation}
+\label{eq::twowayA}
+\mathbf{u}(\mathbf{x}) = \mathbf{U}_i + \boldsymbol{\omega}_i \times (\mathbf{x} - \mathbf{X}_i).
+\end{equation}
+According to the Newton–Euler equations each particle $i$ obeys
+\begin{align}
+M_i \frac{d \mathbf{U}_i}{dt} &= \Delta M_i \mathbf{g} + \mathbf{F}_i + \mathbf{F}_i^{\text{col}}, \\
+\mathbf{I}_i \frac{d \boldsymbol{\omega}_i}{dt} + \boldsymbol{\omega}_i \times (\mathbf{I}_i \boldsymbol{\omega}_i) &= \mathbf{T}_i,
+\end{align}
+with effective buoyant mass $\Delta M_i = M_i - \rho_f |\Omega_i|$. Together with the boundary condition in eq. \ref{eq::twowayA} this allows us to set up the two-way coupling between the fluid and the solid particles.
+
+
+\subsection{Fictitious Boundary Method}
+
+In the FEM–FBM approach, the governing equations are extended to the full domain $\Omega_T$, enforcing rigid-body constraints explicitly in particle regions. This transforms the coupled fluid–solid problem into a single-domain formulation on a fixed mesh.
+
+The hydrodynamic force $\mathbf{F}_i$ and torque $\mathbf{T}_i$ on each particle $i$ are computed via volume-integral approximations:
+\begin{align}
+\mathbf{F}_i &= -\int_{\Omega_T} \boldsymbol{\sigma} \cdot \nabla \alpha_i \, d\mathbf{x}, \\
+\mathbf{T}_i &= -\int_{\Omega_T} (\mathbf{x} - \mathbf{X}_i) \times (\boldsymbol{\sigma} \cdot \nabla \alpha_i) \, d\mathbf{x},
+\end{align}
+where $\alpha_i$ is the indicator function of particle $i$ and $\mathbf{X}_i$ its center. This approach avoids surface integration and is particularly well-suited for structured meshes.
+
+\subsection{Discretization And Numerical Solution Strategy}
+
+We discretize the system in time using the strongly A-stable fractional-step-$\theta$ scheme \cite{Blasco_Codina_Huerta_1998,WanTurek2007a} and in space using hexahedral meshes with the $Q_2/P_1^{\mathrm{disc}}$ finite element pair for velocity and pressure, respectively. The rigid-body constraints are enforced strongly on all nodes within each particle region. A detailed derivation of the weak forms, time-stepping scheme, and force computation strategy is given in \cite{münster2025effectiveviscosityclosuresdense}. While DNS resolves hydrodynamic forces directly, near-contact interactions require additional modeling. We therefore extend the DNS formulation with a frictional hard-sphere contact model, which ensures realistic treatment of particle–particle and particle–wall collisions.
+
+\section{Hard Contact Model for Rigid Particles}
+\label{sec:lubrication}
+We adopt a nonsmooth hard-contact formulation with Coulomb friction, which is the standard approach in rigid-body dynamics. Unlike soft-sphere DEM, this avoids introducing artificial spring–dashpot energies; dissipation arises solely from frictional laws. For details on the following variable definitions and operators, the reader is referred to Appendix~\ref{appendix:contact_symbols}. A more comprehensive description of the method is given in \cite{münster2025effectiveviscosityclosuresdense}.
+Contacts are formulated as point-wise constraints and resolved as a linear complementarity problem based on the Delassus operator \cite{stewart_trinkle_1996, anitescu_potra_1997}:
+\begin{equation}
+\dot{\bm{g}}_i = \bm{W}_i \bm{p}_i + \bm{b}_i, \quad \bm{p}_i \in \mathcal{K}_i.
+\end{equation}
+Baumgarte stabilization \cite{baumgarte_1972} is applied to improve numerical stability in the normal direction.
+
+The system of contacts is solved iteratively using the Projected Gauss–Seidel (PGS) method \cite{erleben_2004}:
+\begin{equation}
+\bm{p}_i^{k+1} = \Pi_{\mathcal{K}_i}\bigl(\bm{p}_i^k - \omega \bm{W}_{ii}^{-1}\dot{\bm{g}}_i \bigr).
+\end{equation}
+We implement both approximate decoupled and fully coupled friction-cone projection strategies \cite{hwangbo_lee_hutter_2018, anitescu_tasora_2010}.
+
+Parallelization is achieved through domain decomposition, with subdomains exchanging ghost-body velocity data after each PGS sweep to maintain consistency across the simulation domain. This approach integrates naturally with the CFD solver's decomposition strategy and enables large-scale simulation of dense particle suspensions with frictional contact. As implementation base for the described hard contact model we use a fork of the Physics Engine (\textit{pe}) project \cite{EIBL201836, computation7010009} that has been extended with an efficient interface to our CFD solver.
+
+Although the present study uses spherical particles, this choice reflects a modeling simplification rather than a limitation of the method. The underlying hard-contact formulation by Anitescu and collaborators \cite{anitescu_potra_1997} applies to arbitrary rigid-body geometries. We introduced the spherical approximation for two reasons. First, it ensures comparability with earlier LPT simulations \cite{cryst11121466}. Second, previous studies concluded that the spherical shape assumption does not interfere with flow regime identification. 
+
+\subsection{Key Advantages of the combined DNS/Contact Model Method}
+\label{sec:key_advantages_dns}
+
+We contrast a Lagrangian point-particle (LPT) approach using the Schiller--Naumann (S--N) drag correlation with particle-resolved DNS for spherical particles in liquid--solid flows across dilute ($\phi \lesssim 0.01$) to moderately dense ($0.05 \le \phi < 0.2$) volume fractions $\phi$ and from viscous to moderately inertial particle Reynolds numbers \(Re_p\).
+
+The S--N correlation for the drag coefficient of a single, isolated, rigid sphere in an unbounded fluid with common parameters shows a constant plateau \(C_D\approx 0.44\) for \(Re_p\gtrsim 10^3\) (pre-crisis inertial regime) \cite{CliftGraceWeber,BrownLawler2003,Achenbach1972}. The S--N model has no dependence on the local solids volume fraction \(\phi\), a property which our DNS approach clearly has, as shown in our prior work \cite{münster2025effectiveviscosityclosuresdense}. Even the low volume fractions used in this work show configurations where the local solid concentration is high (rear loading, stacking), a situation where models like S--N deviate from DNS solutions \cite{LaddHillKoch, Beetstra, TENNETI20111072} and typically under-predict drag. Furthermore, S--N provides drag only: lift and torque are not included. When shear/rotation matter, additional closures for lift and hydrodynamic torque are required (e.g.\ \cite{Saffman1965,HolzerSommerfeld2008,Zastawny2012}). In LPT/S–N, particles interact only via drag with a one-way or frozen carrier flow, so both collision-induced momentum transfer and lubrication effects from squeezed fluid films are neglected. DNS with sufficient grid resolution can capture these effects and apply them to the particles in close proximity as well as neighboring particles. When the geometric gap gets to small to be resolved by the grid then lubrication correction can be added for DNS \cite{münster2025effectiveviscosityclosuresdense}. LPT/S--N can also add lubrication models, but they again lack the back coupling to the fluid, the effects of a squeezed fluid film are not propagated to neighboring particles.
+Particle agglomeration is a critical phenomenon in the ATC. To study it rigorously, one must resolve squeeze-film pressure, momentum redistribution, and the history of local clustering.
+
+In particle-resolved DNS (immersed/fictitious-boundary/domain methods), the \emph{total hydrodynamic force and torque} on each particle are obtained by integrating the surface stresses, with no drag/lift/torque closures and with full two-way momentum coupling \cite{MittalIaccarino2005, Uhlmann2005, WanTurek2006b}. This inherently captures unsteady features (wake dynamics, vortex shedding, particle induces vortex modification) that influence instantaneous and mean forces. This provides an inherent ability to capture important flow features in the ATC.
+
+
+The techniques described in the preceding sections explicitly resolve fluid--particle interactions by solving the incompressible Navier--Stokes equations with immersed boundary constraints for moving rigid particles. This approach accounts for full momentum exchange between the fluid and the dispersed phase, capturing feedback effects such as vortex modification, wake interactions, and near-wall accumulation. Inter-particle and particle--wall collisions are treated with a frictional hard-contact model, and hydrodynamic forces, including lubrication effects, are resolved without empirical closure laws. This procedure represents a significant advancement over our previous LPT--FEM approach \cite{cryst11121466}, enabling more accurate, realistic, and insightful investigations.
+We validate the numerical framework using experimental data from the ATC. The following section details the material system and operating conditions used for this comparison.
+

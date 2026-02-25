@@ -1,0 +1,19 @@
+\appendix
+\section{Variables and Symbols}
+\label{appendix:contact_symbols}
+
+This appendix provides definitions of the symbols used in the hard-sphere contact formulation in Section~\ref{sec:lubrication}.
+
+\begin{itemize}
+    \item $\dot{\bm{g}}_i$: Relative velocity at contact $i$.
+    \item $\bm{p}_i$: Contact impulse vector at contact $i$, with components along the normal and tangential directions.
+    \item $\bm{W}_i$: Delassus operator (Schur complement) relating impulse to velocity change at contact $i$.
+    \item $\bm{b}_i$: Bias term, including contributions from Baumgarte stabilization for constraint drift correction.
+    \item $\mathcal{K}_i$: Local friction cone defining the admissible set of impulses satisfying Coulomb friction: 
+    \[
+    \mathcal{K}_i = \{ \bm{p}_i \mid p_n \geq 0,\; \|\bm{p}_t\| \leq \mu p_n \}.
+    \]
+    \item $\Pi_{\mathcal{K}_i}$: Projection operator onto the admissible set $\mathcal{K}_i$.
+    \item $\omega$: Relaxation parameter in the PGS iteration, typically in $(0,1]$.
+\end{itemize}
+

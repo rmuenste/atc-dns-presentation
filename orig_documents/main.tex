@@ -1,0 +1,174 @@
+\documentclass[preprint, 11pt]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[hmargin=0.9in]{geometry}
+\usepackage[babel,german=quotes]{csquotes}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage[colorlinks=true,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{bm, amsfonts}
+\usepackage{xcolor,soul,framed}
+\usepackage{fixmath}
+\usepackage{tikz}
+\usetikzlibrary{patterns, arrows.meta}
+\usepackage{pgfmath}
+\usetikzlibrary{3d,shapes,positioning}
+\usepackage{pgffor}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{comment}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{makecell}
+\usepackage{titlesec}
+\usepackage{multirow}
+\usepackage{indentfirst}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage[normalem]{ulem}
+\useunder{\uline}{\ul}{}
+
+\usepackage{booktabs} % For better table rules
+\usepackage{siunitx}  % For aligning numbers in tables
+\usepackage{adjustbox} % Alternative way to adjust the table size
+% Requires: \usepackage{tikz}
+% tikz libraries you likely already load in your preamble:
+
+\newcommand{\diff}{\mathrm{d} }
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\pol}{\mathbb{P}_1}
+\newcommand{\V}{\mathbb{V}_1}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\s}{\mathbf{s}}
+\newcommand{\vel}{\mathbf{v}}
+\newcommand{\n}{\mathbf{n}}
+\newcommand{\f}{\mathbf{f}}
+\newcommand{\uu}{\mathbf{u}}
+\newcommand{\GG}{\mathcal{G}}
+\newcommand{\vv}{\text{\textit{\textbf{v}}}}
+\newcommand{\NN}{d+1}
+\newcommand{\VV}{\mathcal{V}}
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\con}{\mathbf{c}}
+\newcommand{\A}{\mathbf{A}}
+\newcommand{\res}{\mathcal{R}}
+\newcommand{\J}{J_L}
+
+% Define the new command
+\newcommand{\rmcomment}[1]{%
+  \noindent\colorbox{orange}{\textcolor{black}{\textbf{RM comment:} #1}}%
+}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\setcounter{secnumdepth}{4}
+\colorlet{shadecolor}{green}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\itshape}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\newdefinition{remark}{Remark}
+\newtheorem{theorem}{Theorem}
+
+\newcommand\red[1]{{\color{red}#1}}
+\newcommand\blue[1]{{\color{blue}#1}}
+\newcommand\cyan[1]{{\color{cyan}#1}}
+\newcommand\magenta[1]{{\color{magenta}#1}}
+\newcommand\green[1]{{\color{green}#1}}
+\newcommand\brown[1]{{\color{brown}#1}}
+
+\newcommand{\D}{\mathrm{d}}
+\newcommand{\td}[2]{\frac{\D #1}{\D #2}}
+
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\dx}{\mathrm{d}\mathbf{x}}
+\newcommand{\ds}{\mathrm{d}\mathbf{s}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bU}{\mathbf{U}}
+\newcommand{\bomega}{\boldsymbol{\omega}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bF}{\mathbf{F}}
+\newcommand{\bT}{\mathbf{T}}
+\newcommand{\hbu}{\hat{\mathbf{u}}}
+\newcommand{\hp}{\hat p}
+
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+
+\titleformat{\subsection}{\bfseries\small}{\thesubsection}{1em}{}
+
+\makeatletter
+\def\ps@pprintTitle{%
+   \let\@oddhead\@empty
+   \let\@evenhead\@empty
+   \def\@oddfoot{\centerline{\thepage}}%
+   \def\@evenfoot{\centerline{\thepage}}%
+}
+\makeatother
+
+\begin{document}
+
+\begin{frontmatter}
+  \title{Feasibility study for physics-informed direct numerical simulation describing particle suspension in high-loaded compartments of air-segmented flow}
+\author{Otto Mierka$^1$, Raphael Münster$^{1,*}$, Henrik Julian Felix Bettin$^2$, Kerstin Wohlgemuth$^2$, Stefan Turek$^1$}
+\ead{\{otto.mierka,raphael.muenster,stefan.turek,henrik.bettin,kerstin.wohlgemuth\}@tu-dortmund.de}
+\cortext[cor1]{Corresponding author}
+
+\address{$^1$ Institute of Applied Mathematics (LS III), TU Dortmund University\\ Vogelpothsweg 87, D-44227 Dortmund, Germany \\
+$^2$ Laboratory of Plant and Process Design, TU Dortmund University\\
+Emil-Figge-Straße 70, D-44227 Dortmund, Germany}
+
+%\journal{Computers \& Chemical Engineering}
+\journal{}
+
+\begin{abstract}
+The Archimedes Tube Crystallizer (ATC) employs air-segmented flow in coiled tubes to achieve narrow residence time distributions for continuous crystallization. Taylor and Dean vortices drive particle suspension in this system. However, one-way coupled models fail to capture the fluid–particle feedback that becomes critical at higher loadings. We present a particle-resolved Direct Numerical Simulation (DNS) framework based on a Finite Element–Fictitious Boundary Method with hard-contact modeling of particle interactions. Simulations of L-alanine suspensions across varying particle sizes, solid contents, and rotational speeds are validated against experimental side-view imaging. Three quantitative metrics—axial distribution, radial index, and vertical asymmetry—are introduced to classify suspension regimes. The DNS results reproduce the experimentally observed flow map zones (green, yellow, red/yellow, red) and resolve subtle transitions such as rear loading and loss of vertical symmetry. This feasibility study demonstrates that DNS can reliably predict dense suspension behavior and provides a mechanistic foundation for crystallizer design.
+\end{abstract}
+
+
+
+
+\begin{keyword}
+Crystallization,
+Archimedes Tube Crystallizer (ATC),
+Air-segmented flow,
+Hydrodynamics,
+Particle suspension,
+Computational Fluid Dynamics (CFD),
+Direct Numerical Simulation (DNS),
+Rigid Body Dynamics,
+Particle-fluid interaction,
+Lagrangian Particle Tracking (LPT)
+\end{keyword}
+
+\end{frontmatter}
+
+%%%
+%%% Introduction
+%%%
+
+
+\input{Introduction}
+\input{Mathmodel}
+\input{ATC}
+\input{metrics}
+\input{results}
+\input{Conclusion}
+\input{appendix}
+
+% "plain" orders items in the references list in alphabetical order
+\bibliographystyle{unsrt} % or another style like abbrv, unsrt, etc. 
+\bibliography{11785_project,KW,Paper_I_BibTex} % The name of your .bib file without extension
+
+
+\end{document}

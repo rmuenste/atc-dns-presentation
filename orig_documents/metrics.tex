@@ -1,0 +1,143 @@
+\section{Quantitative Metrics for Flow Regime Classification in the ATC}
+\label{sec:metricSection}
+To complement visual comparisons between simulations and experiments in the Archimedes Tube Crystallizer (ATC), we introduce three quantitative metrics to characterize the internal suspension behavior of the solid phase. These are extracted from fully resolved direct numerical simulation (DNS) particle data and enable direct classification of the observed flow regime using the experimental flow map presented in~\cite{cryst11121466}, see also Figure \ref{fig:flow_map_dct50}.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Figures/flow_map_dct50.png}
+    \caption{Regime classification flow map for the ATC. Reprinted from \cite{Sonnenschein.2021}. Copyright CC BY 4.0}
+    \label{fig:flow_map_dct50}
+\end{figure}
+
+%====
+\subsection{Axial Particle Distribution \texorpdfstring{\(\overline{\phi}(s)\)}{phi(s)}}
+
+The axial particle distribution is defined along the liquid compartment (commonly referred to as a `slug') centerline using the arc-length parameter \(s\), i.e.\ \(\overline{\phi}(s)\). This quantity describes the mean solid volume fraction along the axis of the slug and captures longitudinal segregation effects. 
+
+For a liquid slug with curved centerline $\mathbf{c}(s)$ parameterized by arc length $s \in [0, L]$, the ideal axial particle distribution is defined as:
+\begin{equation}
+\overline{\phi}(s) = \frac{1}{|A(s)|} \int_{A(s)} \phi(\mathbf{r})\, dA ,
+\end{equation}
+where \(A(s)\) denotes the cross-sectional plane perpendicular to the centerline at arc length \(s\), and \(|A(s)|\) is its area. For the ATC tube geometry, this cross-sectional area is constant.
+
+To evaluate \(\overline{\phi}(s)\) from discrete particle data in curved geometries, we employ an orthogonal projection method that reduces the 3D problem to 1D in the following way:
+
+\begin{enumerate}
+    \item Given the slug geometry, we extract the centerline $\mathbf{c}(s)$ where $s$ is the arc length parameter.
+    
+    \item For each particle at position $\mathbf{r}_i$, we find its projection onto the centerline by solving:
+    \begin{equation}
+    s_i = \arg\min_{s} \|\mathbf{r}_i - \mathbf{c}(s)\|^2 ,
+    \end{equation}
+    which yields the arc length coordinate $s_i$ corresponding to the point on the centerline closest to particle $i$.
+    
+    \item We normalize the arc length coordinates to obtain:
+    \begin{equation}
+    \tilde{s}_i = \frac{s_i}{L} \in [0,1] ,
+    \end{equation}
+    where $L$ is the total centerline length.
+\end{enumerate}
+
+With the normalized coordinates $\{\tilde{s}_i\}_{i=1}^{N_p}$, we approximate \(\overline{\phi}(s)\) using a histogram approach:
+
+\begin{enumerate}
+    \item \textbf{Binning}: Divide the normalized domain into $N_{\text{bins}}$ equal-width bins:
+    \[
+    B_k = \left[\frac{k-1}{N_{\text{bins}}}, \frac{k}{N_{\text{bins}}}\right), \quad k = 1, 2, \ldots, N_{\text{bins}} .
+    \]
+    
+    \item \textbf{Particle Counting}: Count particles in each bin:
+    \[
+    n_k = \sum_{i=1}^{N_p} \chi_{B_k}(\tilde{s}_i) ,
+    \]
+    where $\chi_{B_k}$ is the indicator function of bin $B_k$.
+    
+    \item \textbf{Concentration Ratio}: Compute the dimensionless concentration ratio:
+    \[
+    \overline{\phi}_k = \frac{n_k}{n_{\text{uniform}}} = \frac{n_k N_{\text{bins}}}{N_p} .
+    \]
+\end{enumerate}
+
+The histogram evaluation approximates the continuous integral through the following correspondences:
+
+\begin{itemize}
+    \item In the continuous formulation, \(\overline{\phi}(s)\) integrates particle volume fraction over each cross-section. In the discrete case, we count particles whose centers lie within a finite arc-length interval $\Delta s = L/N_{\text{bins}}$.
+    
+    \item The orthogonal projection implicitly performs the cross-sectional integration by mapping all particles in a cross-sectional vicinity to the same arc length coordinate:
+    \[
+    \frac{1}{|A(s)|} \int_{A(s)} \phi(\mathbf{r})\, dA \;\approx\; \frac{n_k}{V_k/v_p} ,
+    \]
+    where $V_k = |A(s)| \, \Delta s$ is the volume of bin $k$ and $v_p$ is the particle volume.
+    
+    \item By using the concentration ratio \(\overline{\phi}_k\), we obtain a dimensionless quantity that represents
+    \[
+    \overline{\phi}(s) \approx \overline{\phi}_k \cdot \phi_{\text{bulk}}, \quad s \in B_k ,
+    \]
+    where \(\phi_{\text{bulk}} = N_p v_p / V_{\text{total}}\) is the bulk volume fraction. This normalization ensures that averaging over all bins recovers the bulk value.
+\end{itemize}
+
+%====
+Peaks in \(\overline{\phi}(s)\) near the rear of the slug are characteristic of gravitational settling and low Dean number regimes (``red zone''), while flatter profiles indicate increasing longitudinal homogenization associated with vortex-induced mixing (``green zone'').
+
+\subsection{Radial Distribution Index \texorpdfstring{\(I_r\)}{Ir}}
+
+The radial distribution index \(I_r \in [0,1]\) quantifies how uniformly particles are distributed within the cross-section of the slug.
+
+Given a particle position \(\vec{p}_i\), we:
+\begin{itemize}
+  \item Project it onto the nearest point \(\vec{c}(s^*)\) on the ATC centerline.
+  \item Compute the cross-sectional distance \(r_i = \|\vec{p}_i - \vec{c}(s^*) - ((\vec{p}_i - \vec{c}(s^*)) \cdot \vec{T}) \vec{T}\|\).
+\end{itemize}
+
+All radii \(\{r_i\}\) are binned into \(N\) equal-area radial shells. Let \(\phi_j\) be the particle count in shell \(j\), and \(\phi_\text{bulk}\) the mean count per shell. Then:
+\begin{equation}
+  I_r = 1 - \frac{1}{2 \phi_\text{bulk}} \sum_{j=1}^{N} \left| \phi_j - \phi_\text{bulk} \right|.
+\end{equation}
+Low values (\(I_r \ll 1\)) indicate wall accumulation; \(I_r \to 1\) indicates a uniform radial spread typical of well-mixed regimes.
+
+\subsection{Vertical Asymmetry Index \texorpdfstring{\(A_y\)}{Ay}}
+
+The vertical asymmetry index \(A_y \in [-1,1]\) measures the net imbalance of particle positions across the vertical mid-plane of the slug. It is defined using the same local Frenet frame as above.
+
+Given the binormal vector \(\vec{B}\), which serves as the local ``upward'' direction, we define:
+\begin{equation}
+  \text{sign}_i = \operatorname{sign} \left( (\vec{p}_i - \vec{c}(s^*)) \cdot \vec{B} \right)
+\end{equation}
+to classify particles as above or below the vertical mid-plane. The index is then computed as:
+\begin{equation}
+  A_y = \frac{n_{\text{upper}} - n_{\text{lower}}}{n_{\text{upper}} + n_{\text{lower}}},
+\end{equation}
+where \(n_{\text{upper}}\) and \(n_{\text{lower}}\) are the total particle counts in each half. Values \(A_y < 0\) indicate bottom-heavy configurations dominated by gravity, while \(A_y \approx 0\) reflects vertical symmetry due to balanced Dean vortex structures.
+
+\subsection{Usage in Regime Classification}
+
+Each of the three metrics provides complementary information:
+
+\begin{itemize}
+  \item \textbf{Axial profile \(\overline{\phi}(s)\)} captures rear-loading vs uniformity.
+  \item \textbf{Radial index \(I_r\)} quantifies in-plane mixing or wall accumulation.
+  \item \textbf{Vertical asymmetry \(A_y\)} distinguishes gravitational vs vortex-driven distribution.
+\end{itemize}
+
+These metrics can be time-averaged and compared across operating conditions to classify simulations according to the ATC flow map:
+
+\begin{table}[ht]
+\centering
+\caption{Linking the color coded flow regimes (see Figure \ref{fig:flow_map_dct50} from publication ~\cite{cryst11121466} for details) to metric value ranges.}
+\label{tab:flowmap_metrics}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Flow Regime (map zone)} & \(\overline{\phi}(s)\) & \(I_r\) & \(A_y\) \\
+\midrule
+Red (gravitational)   & Peak at rear          & $\lesssim 0.5$   & $ \to -1$ \\
+Yellow                & Moderate spread       & $0.5 < I_r < 0.8$ & $\ll 0$ \\
+Green (fully mixed)   & Nearly flat profile          & $\to 1$           & $ \to 0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Together, \(\overline{\phi}(s)\), \(I_r\), and \(A_y\) form a robust feature set for automated regime identification and comparison between DNS predictions and experimental observations in the ATC system. Furthermore, these metrics can be seen as a fine-grained variant of the goodness of suspension (GoS) metric defined in a prior publication \cite{TERMUHLEN2021116771}, used for quantitave evaluation of particle suspension in a slug
+flow crystallizer.
+Having established an upgraded DNS framework capable of handling representative ATC operating points, we now evaluate the results qualitatively—through direct side-view comparison with experiments—and quantitatively, using the metrics defined above.
+
