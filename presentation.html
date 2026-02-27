@@ -190,10 +190,11 @@
         </p>
       </div>
       <div style="text-align:center;">
-        <!-- Placeholder for ATC schematic (Figure 2) -->
-        <div style="background:#f0f0f0; padding:40px 20px; border-radius:8px; border:2px dashed #aaa;">
-          <p class="small" style="color:#888; margin:0;"><em>ATC Schematic</em><br>(Figure 2 from paper)</p>
-        </div>
+        <img
+          src="orig_documents/Figures/Setup.png"
+          alt="ATC setup schematic showing feed tank, coiled tube geometry, and video camera arrangement"
+          style="width:100%; max-width:640px; border-radius:8px; border:1px solid #ddd;"
+        >
         <p class="tiny" style="margin-top:0.5em;">Feed tank &rarr; peristaltic pump &rarr; coiled tube &rarr; video camera</p>
       </div>
     </div>
@@ -556,21 +557,36 @@
   <!-- ============================================================ -->
   <section>
     <h2>Qualitative Comparison: Experiment vs. DNS</h2>
-    <div class="two-col">
+    <ul>
+      <li><span class="green-zone">C1&ndash;C2 (green):</span> Uniform suspension, particles fill the slug</li>
+      <li><span class="yellow-zone">C3&ndash;C4 (yellow):</span> Rear-loading visible, depleted front region</li>
+      <li><span style="color:#e67e22; font-weight:bold;">C5&ndash;C6 (red/yellow):</span> Strong rear accumulation, stacking at bottom</li>
+      <li><span class="red-zone">C7&ndash;C8 (red):</span> Extreme settling, dense bottom-rear cluster</li>
+    </ul>
+    <p class="small" style="margin-top:0.8em;">DNS faithfully reproduces all experimentally observed suspension patterns.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- QUALITATIVE FIGURES -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Qualitative Comparison Figures (C1&ndash;C8)</h2>
+    <div style="display:flex; gap:1.2em; justify-content:center; align-items:flex-start;">
       <div style="text-align:center;">
-        <!-- Placeholder for Figure 4 -->
-        <div style="background:#f0f0f0; padding:30px 15px; border-radius:8px; border:2px dashed #aaa;">
-          <p class="small" style="color:#888; margin:0;"><em>Side-view images (experiment)<br>vs. DNS renderings<br>for cases C1&ndash;C4</em><br>(Figure 4)</p>
-        </div>
+        <img
+          src="orig_documents/Figures/Fig4a.png"
+          alt="Experiment and DNS qualitative comparison for cases C1 to C4"
+          style="height:62vh; width:auto; border-radius:8px; border:1px solid #ddd;"
+        >
+        <p class="tiny" style="margin-top:0.4em;">Cases C1&ndash;C4</p>
       </div>
-      <div>
-        <ul>
-          <li><span class="green-zone">C1&ndash;C2 (green):</span> Uniform suspension, particles fill the slug</li>
-          <li><span class="yellow-zone">C3&ndash;C4 (yellow):</span> Rear-loading visible, depleted front region</li>
-          <li><span style="color:#e67e22; font-weight:bold;">C5&ndash;C6 (red/yellow):</span> Strong rear accumulation, stacking at bottom</li>
-          <li><span class="red-zone">C7&ndash;C8 (red):</span> Extreme settling, dense bottom-rear cluster</li>
-        </ul>
-        <p class="small" style="margin-top:0.8em;">DNS faithfully reproduces all experimentally observed suspension patterns.</p>
+      <div style="text-align:center;">
+        <img
+          src="orig_documents/Figures/Fig5a.png"
+          alt="Experiment and DNS qualitative comparison for cases C5 to C8"
+          style="height:62vh; width:auto; border-radius:8px; border:1px solid #ddd;"
+        >
+        <p class="tiny" style="margin-top:0.4em;">Cases C5&ndash;C8</p>
       </div>
     </div>
   </section>
@@ -603,21 +619,52 @@
   <!-- ============================================================ -->
   <section>
     <h2>Green Regime (C1&ndash;C2): Fully Mixed</h2>
-    <div class="two-col">
-      <div>
-        <ul>
-          <li>Axial profiles nearly flat &mdash; homogeneous distribution</li>
-          <li>Radial index \(I_r \approx 0.90\): uniform cross-sectional spread</li>
-          <li>Vertical asymmetry \(A_y \approx 0\): balanced Dean vortices counteract gravity</li>
-          <li>Higher solid content (C2) shows mild bottom-heaviness but radial homogeneity intact</li>
-        </ul>
-      </div>
-      <div style="text-align:center;">
-        <!-- Placeholder for axial + radial plots -->
-        <div style="background:#eaf7ef; padding:25px 15px; border-radius:8px; border:2px dashed #27ae60;">
-          <p class="small" style="color:#27ae60; margin:0;"><em>Axial distribution &amp;<br>radial heat maps<br>for C1 &amp; C2</em><br>(Figures 6a,b &amp; 8a,b)</p>
-        </div>
-      </div>
+    <ul>
+      <li>Axial profiles nearly flat &mdash; homogeneous distribution</li>
+      <li>Radial index \(I_r \approx 0.90\): uniform cross-sectional spread</li>
+      <li>Vertical asymmetry \(A_y \approx 0\): balanced Dean vortices counteract gravity</li>
+      <li>Higher solid content (C2) shows mild bottom-heaviness but radial homogeneity intact</li>
+    </ul>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- GREEN REGIME PLOTS -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>C1/C2 Axial and Radial Distributions</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.7em 1em; align-items:start; margin-top:-0.8em;">
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case1_axial_distribution.png"
+          alt="Case C1 axial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C1 axial distribution</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case_1_equal_area_equal_area_radial_analysis.png"
+          alt="Case C1 radial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C1 radial heat map</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case2_axial_distribution.png"
+          alt="Case C2 axial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C2 axial distribution</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case_2_equal_area_equal_area_radial_analysis.png"
+          alt="Case C2 radial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C2 radial heat map</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -626,23 +673,55 @@
   <!-- ============================================================ -->
   <section>
     <h2>Red Regime (C7&ndash;C8): Gravity-Dominated</h2>
-    <div class="two-col">
-      <div>
-        <ul>
-          <li>Extreme rear loading: all particles concentrated at slug rear</li>
-          <li>\(A_y = -1.0\): <strong>all</strong> particles below the mid-plane</li>
-          <li>Front of slug completely empty</li>
-          <li>Moderate \(I_r \approx 0.47\) is <em>misleading</em> &mdash; caused by geometric binning of rear stacking, not genuine radial uniformity</li>
-        </ul>
-        <div class="highlight-box">
-          This demonstrates why all three metrics must be interpreted jointly.
-        </div>
-      </div>
-      <div style="text-align:center;">
-        <div style="background:#fdedec; padding:25px 15px; border-radius:8px; border:2px dashed #e74c3c;">
-          <p class="small" style="color:#e74c3c; margin:0;"><em>Axial distribution &amp;<br>radial heat maps<br>for C7 &amp; C8</em><br>(Figures 7c,d &amp; 9c,d)</p>
-        </div>
-      </div>
+    <ul>
+      <li>Extreme rear loading: all particles concentrated at slug rear</li>
+      <li>\(A_y = -1.0\): <strong>all</strong> particles below the mid-plane</li>
+      <li>Front of slug completely empty</li>
+      <li>Moderate \(I_r \approx 0.47\) is <em>misleading</em> &mdash; caused by geometric binning of rear stacking, not genuine radial uniformity</li>
+    </ul>
+    <div class="highlight-box">
+      This demonstrates why all three metrics must be interpreted jointly.
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- RED REGIME PLOTS -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>C7/C8 Axial and Radial Distributions</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.7em 1em; align-items:start; margin-top:-0.8em;">
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case7_axial_distribution.png"
+          alt="Case C7 axial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C7 axial distribution</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case_7_equal_area_equal_area_radial_analysis.png"
+          alt="Case C7 radial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C7 radial heat map</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case8_axial_distribution.png"
+          alt="Case C8 axial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C8 axial distribution</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case_8_equal_area_equal_area_radial_analysis.png"
+          alt="Case C8 radial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C8 radial heat map</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -663,6 +742,88 @@
       <li><strong>Red/Yellow &rarr; Red:</strong> Suspension collapses into dense bottom-rear cluster, \(A_y = -1.0\), front empty</li>
     </ul>
     <p class="small" style="margin-top:0.8em;">Meaningful upper-half particle population and front-filling occur <strong>only</strong> in the green regime.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- C3/C4 PLOTS -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>C3/C4 Axial and Radial Distributions</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.7em 1em; align-items:start; margin-top:-0.8em;">
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case3_axial_distribution.png"
+          alt="Case C3 axial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C3 axial distribution</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case_3_equal_area_equal_area_radial_analysis.png"
+          alt="Case C3 radial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C3 radial heat map</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case4_axial_distribution.png"
+          alt="Case C4 axial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C4 axial distribution</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case_4_equal_area_equal_area_radial_analysis.png"
+          alt="Case C4 radial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C4 radial heat map</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- C5/C6 PLOTS -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>C5/C6 Axial and Radial Distributions</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.7em 1em; align-items:start; margin-top:-0.8em;">
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case5_axial_distribution.png"
+          alt="Case C5 axial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C5 axial distribution</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case_5_equal_area_equal_area_radial_analysis.png"
+          alt="Case C5 radial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C5 radial heat map</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case6_axial_distribution.png"
+          alt="Case C6 axial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C6 axial distribution</figcaption>
+      </figure>
+      <figure style="margin:0; text-align:center;">
+        <img
+          src="orig_documents/Figures/case_6_equal_area_equal_area_radial_analysis.png"
+          alt="Case C6 radial distribution"
+          style="width:100%; max-height:25vh; object-fit:contain; border:1px solid #ddd; border-radius:6px;"
+        >
+        <figcaption class="tiny" style="margin-top:0.2em;">C6 radial heat map</figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- ============================================================ -->
