@@ -72,6 +72,10 @@
       color: white;
       margin: 2px;
     }
+    .badge.large {
+      font-size: 0.8em;
+      padding: 4px 12px;
+    }
     .badge-green { background: #27ae60; }
     .badge-yellow { background: #f39c12; }
     .badge-red { background: #e74c3c; }
@@ -128,30 +132,13 @@
     <h1 style="font-size:1.5em; line-height:1.3;">Predicting Suspension Quality in an Archimedes Tube Crystallizer<br>
       <span style="font-size:0.8em;">via Direct Numerical Simulation</span></h1>
     <p style="margin-top:1em; font-size:0.7em;">
-      <strong>O. Mierka, R. M&uuml;nster<sup>*</sup>, H.J.F. Bettin, K. Wohlgemuth, S. Turek</strong><br>
+      <strong>O. Mierka<sup>1</sup>, R. M&uuml;nster<sup>1*</sup>, H.J.F. Bettin<sup>2</sup>, K. Wohlgemuth<sup>2</sup>, S. Turek<sup>1</sup></strong><br>
       <span class="small">
         <sup>1</sup> Institute of Applied Mathematics (LS III), TU Dortmund University<br>
         <sup>2</sup> Laboratory of Plant and Process Design, TU Dortmund University
       </span>
     </p>
     <p class="tiny" style="margin-top:1.5em;">DECHEMA/VDI-Fachgruppen Kristallisation und Trocknungstechnik 2026</p>
-  </section>
-
-  <!-- ============================================================ -->
-  <!-- OUTLINE -->
-  <!-- ============================================================ -->
-  <section>
-    <h2>Outline</h2>
-    <ol style="font-size:0.75em; line-height:1.8;">
-      <li>Motivation &amp; Background</li>
-      <li>The Archimedes Tube Crystallizer (ATC)</li>
-      <li>Mathematical Model &amp; Numerical Methods</li>
-      <li>Hard Contact Model for Rigid Particles</li>
-      <li>DNS vs. LPT &mdash; Key Advantages</li>
-      <li>Quantitative Metrics for Flow Regime Classification</li>
-      <li>Results &amp; Validation</li>
-      <li>Conclusion &amp; Outlook</li>
-    </ol>
   </section>
 
   <!-- ============================================================ -->
@@ -163,13 +150,18 @@
       <li>Crystallization is critical in pharmaceutical &amp; chemical manufacturing</li>
       <li>Narrow particle size distribution (PSD) ensures product quality</li>
       <li>Continuous crystallization offers better consistency than batch methods</li>
-      <li>Particle suspension quality directly impacts agglomeration, breakage, and blockage</li>
+      <li>Suspension quality governs agglomeration, breakage, and blockage</li>
+  
+      <li>Initial studies employed one-way coupled <strong>Lagrangian Particle Tracking (LPT)</strong></li>
+      <li>Fully resolved <strong>Direct Numerical Simulations (DNS)</strong> were performed to capture particle–fluid–particle interactions accurately</li>
+      <li>Current objective: Derive a <strong>DNS-informed Euler–Lagrange model</strong> that preserves physics at reduced computational cost</li>
     </ul>
+  
     <div class="highlight-box" style="margin-top:1em;">
-      <strong>Key challenge:</strong> One-way coupled models (LPT) fail to capture
-      fluid&ndash;particle feedback at higher solid loadings. We need fully resolved simulations.
+      <strong>Core idea:</strong> Use DNS as a high-fidelity reference to calibrate drag,
+      lift, and interaction closures for predictive yet affordable simulations.
     </div>
-  </section>
+  </section>  
 
   <!-- ============================================================ -->
   <!-- ATC INTRODUCTION -->
@@ -212,13 +204,16 @@
       <div class="highlight-box">
         <strong>2. Demonstrate feasibility</strong> of DNS for simulating a substantial number of particles relevant to ATC conditions, and identify strategies for scaling to larger particle counts.
       </div>
+      <div class="highlight-box">
+        <strong>3. Provide calibration data</strong> for drag closure models and establish the foundation for Euler&ndash;Lagrange simulations.
+      </div>
     </div>
     <p class="small" style="margin-top:1em;">
-      <span class="badge badge-blue">L-alanine</span>
-      <span class="badge badge-blue">8 cases</span>
-      <span class="badge badge-blue">3 particle sizes</span>
-      <span class="badge badge-blue">2 solid contents</span>
-      <span class="badge badge-blue">3 rotational speeds</span>
+      <span class="badge badge-blue large">L-alanine</span>
+      <span class="badge badge-blue large">8 cases</span>
+      <span class="badge badge-blue large">3 particle sizes</span>
+      <span class="badge badge-blue large">2 solid contents</span>
+      <span class="badge badge-blue large">3 rotational speeds</span>
     </p>
   </section>
 
@@ -319,6 +314,16 @@
           <li>Parallel domain decomposition</li>
         </ul>
       </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- HYDRODYNAMIC FORCES VISUAL -->
+  <!-- ============================================================ -->
+  <section>
+    <h2>Hydrodynamic Forces on a Particle</h2>
+    <div style="text-align:center;">
+      <img src="hydro_forces.png" alt="Hydrodynamic forces from pressure and shear stresses" style="width:100%; max-width:1100px; height:auto;">
     </div>
   </section>
 
@@ -495,16 +500,16 @@
   <section>
     <h2>Three Quantitative Metrics</h2>
     <p class="small" style="margin-bottom:0.5em;">Introduced to classify suspension regimes <em>beyond</em> qualitative visual inspection:</p>
-    <div style="display:flex; gap:1em; font-size:0.65em;">
-      <div style="flex:1; background:#eaf7ef; padding:15px; border-radius:8px; border-top:4px solid #27ae60;">
+    <div style="display:flex; gap:1em; font-size:0.75em;">
+      <div style="flex:1; background:#eaf7ef; padding:18px; border-radius:8px; border-top:4px solid #27ae60;">
         <h3 style="color:#27ae60; margin-top:0;">1. Axial Distribution \(\overline\phi(s)\)</h3>
         <p>Mean solid volume fraction along the slug centerline. Captures <strong>rear-loading</strong> vs. uniform distribution.</p>
       </div>
-      <div style="flex:1; background:#fef5e7; padding:15px; border-radius:8px; border-top:4px solid #f39c12;">
+      <div style="flex:1; background:#fef5e7; padding:18px; border-radius:8px; border-top:4px solid #f39c12;">
         <h3 style="color:#f39c12; margin-top:0;">2. Radial Index \(I_r\)</h3>
         <p>Uniformity of cross-sectional distribution. \(I_r \to 1\): well-mixed; \(I_r \ll 1\): wall accumulation.</p>
       </div>
-      <div style="flex:1; background:#fdedec; padding:15px; border-radius:8px; border-top:4px solid #e74c3c;">
+      <div style="flex:1; background:#fdedec; padding:18px; border-radius:8px; border-top:4px solid #e74c3c;">
         <h3 style="color:#e74c3c; margin-top:0;">3. Vertical Asymmetry \(A_y\)</h3>
         <p>Particle imbalance across the mid-plane. \(A_y \approx 0\): symmetric; \(A_y \to -1\): gravity-dominated.</p>
       </div>
